@@ -1,4 +1,5 @@
-### 一、什么是作用域
+## 一、什么是作用域
+
 > 规定变量存放在哪些位置，以及怎么找到这些变量的规则。是配合引擎和编译器进行工作的变量存储地
 
 - 编译阶段，当编译器语句的解析时，声明某个变量，会先去作用域中查找是否有该值，否则在作用域中添加。
@@ -9,7 +10,8 @@
 - 非strict模式下，LHS如果在所有作用域中找不到该变量，全局作用域会默认在全局中声明一个变量。
 - RHS则会报出ReferenceError
 
-### 二、词法作用域
+## 二、词法作用域
+
 > 在编译器分析函数被声明的位置所定义的作用域
 
 - eval 会改变词法作用域
@@ -36,7 +38,8 @@ foo( o2 );
 console.log( o2.a ); // undefined
 console.log( a ); // 2 -- 哦，全局作用域被泄漏了！
 ```
-### 三、函数与块作用域
+## 三、函数与块作用域
+
 **最低权限原则**
 > 一些函数的私有方法需在对应的函数上下文中进行声明，可避免其它作用域也能访问到该方法的声明
 
@@ -166,7 +169,8 @@ for (var i=1; i<=5; i++) {
 **执行上下文**
 > 在全局、局部代码执行前对当前作用域中数据的初始化
 
-### 模块
+## 五、 模块
+
 > 用闭包的性质返回一个对象（API），这个对象包含了对内部数据的操作
 ```
 function CoolModule() {
@@ -197,10 +201,12 @@ foo.doSomething(); // cool
 var modules = (function(){})()
 ```
 
-### 现代的模块
+#### 现代的模块
+
 挖坑待填。。。
 
-## 五、this
+## 六、this
+
 > this不是编写时绑定，而是运行时绑定，完全根据调用点进行对象的绑定
 
 **调用栈**
@@ -370,7 +376,8 @@ foo.call( obj ); // 2
 
 chrome tool中的restart frame可以跳回指定的调用栈
 
-## js构造函数
+## 七、js构造函数
+
 > 构造函数就是普通函数
 
 **包装类**
@@ -386,7 +393,8 @@ console.log(aa.len); //undefined
 
 ```
 
-## 原型（prototype）
+## 八、原型（prototype）
+
 > 函数的祖先
 **应用**
 1. 提取共有属性
@@ -401,8 +409,59 @@ new会进行赋值  __proto__ = prototype
 
 var a = Object.create(b)
 > a的原型为b   b可为null
- 
+
 所有对象都有原型继承自Object.prototype，但由Object.create为null
- 
+
 **原型重写**
 > 在对象访问通过原型链查找，优先使用较近的原型中的方法
+
+## 九、继承
+
+1. 传统原型
+
+   过多继承了没用的属性
+
+2. 构造函数
+
+   ```
+   
+   ```
+
+   
+
+   不能继承构造函数的原型
+
+   每次继承都要调用父类方法
+
+3. 共享模式
+
+   共享后会影响父类
+
+4. 圣杯模式
+
+   ```
+   function Son(){}
+   
+   function Father(){}
+   
+   function inherit(Target, Origin){
+       function Middle(){}
+       Middle.prototype = Origin.prototype;
+       Target.prototype = new Middle(); //new Origin（）比不会继承其自身属性
+       Target.prototype.constructor = Target; //沿原型链向上寻找，因为son的实例中constructor根据其原型的constructor而确定
+       Target.prototype.uber = Origin.prototype; //保存真正继承自哪个父类
+   }
+   Father.prototype.hello = 'hello';
+   
+   inherit(Son, Father);
+   
+   var son = new Son();
+   var father = new Father();
+   console.log(son.hello); //'hello'
+   console.log(father.hello); //'hello'
+   ```
+
+
+
+
+
