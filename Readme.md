@@ -435,9 +435,17 @@ var a = Object.create(b)
 
 3. 共享模式
 
+   缺点
+
+```
+Target.prototype = Origin.prototype
+```
+
+1. 
+
    共享后会影响父类
 
-4. 圣杯模式
+2. 圣杯模式
 
    ```
    function Son(){}
@@ -461,7 +469,7 @@ var a = Object.create(b)
    console.log(father.hello); //'hello'
    ```
 
-
+## 十、命名空间
 
 
 
