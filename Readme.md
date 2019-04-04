@@ -401,8 +401,8 @@ new会进行赋值  __proto__ = prototype
 
 var a = Object.create(b)
 > a的原型为b   b可为null
- 
+
 所有对象都有原型继承自Object.prototype，但由Object.create为null
- 
+
 **原型重写**
 > 在对象访问通过原型链查找，优先使用较近的原型中的方法
