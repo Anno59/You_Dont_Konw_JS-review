@@ -1,5 +1,3 @@
-# Javascript核心
-
 ## 一、什么是作用域
 
 > 规定变量存放在哪些位置，以及怎么找到这些变量的规则。是配合引擎和编译器进行工作的变量存储地
@@ -522,8 +520,7 @@ Array.prototype.push = function(target){
 
 ----
 
-# 客户端Javascript
-
+客户端Javascript
 ## DOM
 
 - document --> HTMLDocument.prototype --> Document.prototype
@@ -562,3 +559,36 @@ appendChild() //剪切
 
 替换
 node.replaceChild(new, old)
+
+# Window
+**滚动条距离**
+
+ie9上
+
+> window.pageXOffset
+
+ie9下
+
+> document.body.scrollTop + document.documentElement.scrollTop //两者只有一个有值，另一个为0
+
+**视口尺寸**
+
+ie8上
+
+> window.innerHeight
+
+ie8下  //高版本两者都有值
+
+- 标准模式
+
+> document.documentElement.clientHeight  //与innerHeight相同
+
+ - 怪异/混杂模式
+
+> document.body.clientHeight
+
+**偏移距离**
+
+element.offsetTop  //相对最近的父类绝对定位的值
+
+# 事件 
