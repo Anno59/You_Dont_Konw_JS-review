@@ -1,3 +1,5 @@
+# Javascript核心
+
 ## 一、什么是作用域
 
 > 规定变量存放在哪些位置，以及怎么找到这些变量的规则。是配合引擎和编译器进行工作的变量存储地
@@ -313,7 +315,7 @@ foo.count = 0;
 
 3. 显示绑定
 > 使用 call，apply， bind
-bind就是返回一个硬绑定apply的函数封装
+> bind就是返回一个硬绑定apply的函数封装
 ```
 function bind(fn, obj){
     return function(){
@@ -376,7 +378,7 @@ foo.call( obj ); // 2
 
 chrome tool中的restart frame可以跳回指定的调用栈
 
-## 七、js构造函数
+## 七、构造函数
 
 > 构造函数就是普通函数
 
@@ -393,72 +395,70 @@ console.log(aa.len); //undefined
 
 ```
 
-## 八、原型（prototype）
-
-> 函数的祖先
-**应用**
+## 八、原型
 1. 提取共有属性
 
-prototype中的constructor指向当前函数，为了让继承的对象能找到自身的构造器
+2. prototype中的constructor指向当前函数，为了让继承的对象能找到自身的构造器
 
-__proto__指向prototype也能被修改
+3. __proto__指向prototype也能被修改
 
-new会进行赋值  __proto__ = prototype
+4. new会进行隐式赋值  __proto__ = prototype
 
-传递的是指针，各种修改不会影响
+5. 大多数对象的原型继承自Object.prototype，但由Object.create为null
+```
+var a = Object.create(b) //a的原型为b   b可为null
 
-var a = Object.create(b)
-> a的原型为b   b可为null
-
-所有对象都有原型继承自Object.prototype，但由Object.create为null
-
-**原型重写**
-> 在对象访问通过原型链查找，优先使用较近的原型中的方法
+```
+6. 原型重写：在对象访问通过原型链查找，优先使用较近的原型中的方法
 
 ## 九、继承
+缺点
 
-1. 传统原型
+**1. 传统原型**
 
-   过多继承了没用的属性
+* 过多继承了没用的属性
+```
+Target.prototype = new Origin();
+```
 
-2. 构造函数
+**2. 构造函数**
 
-   ```
-   
-   ```
+* 不能继承构造函数的原型
 
-   
+* 每次继承都要调用父类方法
+```
+function Target(){
+   Target.prototype = Origin.call(this);
+}
+```
 
-   不能继承构造函数的原型
 
-   每次继承都要调用父类方法
+**3. 共享模式**
 
-3. 共享模式
-
-   缺点
+* 改变子类原型时，父类也会随之改变
 
 ```
 Target.prototype = Origin.prototype
 ```
 
-1. 
+**4. 圣杯模式**
 
-   共享后会影响父类
-
-2. 圣杯模式
+* 结合了前几种的优点
 
    ```
+   var inherit = function(Target, Origin){
+       var Middle = function(){}
+       return function(){
+           Middle.prototype = Origin.prototype;
+           Target.prototype = new Middle(); //new 
+           Target.prototype.constructor = Target; //son的实例中constructor根据其构造函数原型的constructor而确定
+           Target.prototype.uber = Origin.prototype; //保存真正继承自哪个父类
+       }
+   }
    function Son(){}
    
    function Father(){}
-   
-   function inherit(Target, Origin){
-       function Middle(){}
-       Middle.prototype = Origin.prototype;
-       Target.prototype = new Middle(); //new Origin（）比不会继承其自身属性
-       Target.prototype.constructor = Target; //沿原型链向上寻找，因为son的实例中constructor根据其原型的constructor而确定
-       Target.prototype.uber = Origin.prototype; //保存真正继承自哪个父类
-   }
+     
    Father.prototype.hello = 'hello';
    
    inherit(Son, Father);
@@ -470,6 +470,95 @@ Target.prototype = Origin.prototype
    ```
 
 ## 十、命名空间
+* 传统通过对象进行保存
+
+```
+var a = {
+    b : 1
+}
+
+var a1 = {
+    b : 1
+}
+```
 
 
+* 现在可以使用闭包进行编码
+```
+var a = (function(){
+    var b;
+    return function(){
+        console.log(b)
+    }
+}())
+```
 
+## 十一、对象枚举
+
+1. for in
+
+> 会遍历对象的__proto__，使用hasOwnProperty进行过滤。手动设置的对象会被遍历出，系统自带的不会遍历出
+
+2. in
+
+> 判断属性能不能在对象上访问到，包括原型
+
+3. instanceof 
+
+> 对象的原型链上有没有构造函数的prototype
+
+## 十二、类数组
+```
+var obj = {"0":1, "1":2, length:2, push: Array.prototype.push} 
+
+Array.prototype.push = function(target){
+    this[this.length] = target;
+    this.length++
+}
+```
+1. 属性为索引
+2. length
+3. 有push, splice等数组操作属性
+
+----
+
+# 客户端Javascript
+
+## DOM
+
+- document --> HTMLDocument.prototype --> Document.prototype
+- <html> --> HTMLHtmlElement.prototype --> Element.prototype
+- 终端为Object.prototype
+
+```
+Document.prototype.abc = 'abc'
+"abc"
+document.abc
+"abc"
+HTMLDocument.prototype.abc = 'a'
+"a"
+document.abc
+"a"
+
+delete HTMLDocument.prototype.abc
+true
+document.abc
+"abc"
+```
+
+增
+createElement
+createTextNode
+createComment
+createDocumentFragment
+
+删
+child.remove()
+parents.removeChild(element) //剪切
+
+插
+insertBefore
+appendChild() //剪切
+
+替换
+node.replaceChild(new, old)
