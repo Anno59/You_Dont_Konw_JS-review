@@ -1,3 +1,5 @@
+# JS核心
+
 ## 一、什么是作用域
 
 > 规定变量存放在哪些位置，以及怎么找到这些变量的规则。是配合引擎和编译器进行工作的变量存储地
@@ -518,14 +520,48 @@ Array.prototype.push = function(target){
 2. length
 3. 有push, splice等数组操作属性
 
+
+## 十三、异步
+
+1. `domTree`: 将文档中的节点一层层按深度优先解析成树形结构
+
+2. `cssTree`：`domTree`解析完成后等待`cssTree`解析成一个树形结构
+
+3. `renderTree`：根据`cssTree`每个节点对对应的`domTree`的描述，形成一个`renderTree`，最后通过浏览器的渲染引擎绘制
+
+*注意*
+
+- dom节点的删除，增加
+- 宽高位置变化，`display:none -> block，offsetWidth offsetLeft`
+  ...
+
+> 上述`domTree`改变会导致`renderTree` reflow重排，则又会进行上述1-3步骤，消耗性能
+
+- 颜色更变，背景图片...
+
+> 会使`renderTree` 进行`repaint`重绘，但性能相比重排消耗较少
+
+JS文件加载是阻塞的，与当前操作页面元素无关的JS文件可以进行异步加载
+
+1. `defer`: 异步执行，等到`domTree`解析完执行外部脚本或行内脚本 (ie8以下)
+2. `async`: 异步执行，只能加载外部执行脚本，加载完就执行
+3. 动态插入脚本：当创建`script`标签并且设置`src`后就已经异步下载（*注），插入到节点树后就直接执行（等待文件下载完毕后）
+
+*注
+
+*灯塔模式，创建`img`标签设置`src`进行资源的预加载，稍后取数据则直接在缓存中取*
+
 ----
 
 客户端Javascript
 ## DOM
 
+```
 - document --> HTMLDocument.prototype --> Document.prototype
 - <html> --> HTMLHtmlElement.prototype --> Element.prototype
 - 终端为Object.prototype
+```
+
 
 ```
 Document.prototype.abc = 'abc'
@@ -544,21 +580,21 @@ document.abc
 ```
 
 增
-createElement
-createTextNode
-createComment
-createDocumentFragment
+- createElement
+- createTextNode
+- createComment
+- createDocumentFragment
 
 删
-child.remove()
-parents.removeChild(element) //剪切
+- child.remove()
+- parents.removeChild(element) //剪切
 
 插
-insertBefore
-appendChild() //剪切
+- insertBefore
+- appendChild() //剪切
 
 替换
-node.replaceChild(new, old)
+- node.replaceChild(new, old)
 
 # Window
 **滚动条距离**
@@ -589,6 +625,27 @@ ie8下  //高版本两者都有值
 
 **偏移距离**
 
-element.offsetTop  //相对最近的父类绝对定位的值
+`element.offsetTop  //相对最近的父类绝对定位的值`
 
 # 事件 
+
+**三种方式**
+
+```
+div.onclick = function(){}  //句柄
+
+div.addEventListener(event, function, type)
+
+div.attacheEvent()
+```
+
+*注意*
+
+1. 先捕获
+2. 执行事件程序 (和绑定执行顺序有关)
+3. 冒泡
+
+*阻止默认事件*
+
+1. 只有句柄才能使用`return false`阻止默认事件
+2. `event.preventDefault()、event.returnValue = false`
