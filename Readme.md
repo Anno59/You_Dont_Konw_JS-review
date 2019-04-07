@@ -560,14 +560,14 @@ JS文件加载是阻塞的，与当前操作页面元素无关的JS文件可以�
 * 解析`<img>`或者`<link>`的CSS标签浏览器都会创建线程异步下载，继续执行解析文档
 * 解析到`<script>`标签，UI线程挂起，JS引擎单线程执行，进行同步阻塞；若为异步属性再异步下载暂不执行（在异步script文件中无法使用`document.write()`）
 * 文档解析完后`document.readyState = 'interactive'`
-* `defer`属性的JS执行
+* `defer`属性的JS按顺序执行,`async`属性的JS下载后也可以执行
 * `document`触发`DOMContentLoaded`事件，由脚本执行阶段转换为事件驱动阶段
 * 待img静态资源文件，`async`文件加载后，`document.readyState = 'complete'`
 * 处理用户输入等事件
 
+*BOM,JS,DOM对象原型关系图*
 
-
-
+![BOM,JS,DOM对象原型关系图](https://upload-images.jianshu.io/upload_images/3987507-1b29804990099b1a.jpg)
 
 
 
@@ -647,7 +647,7 @@ ie8下  //高版本两者都有值
 
 `element.offsetTop  //相对最近的父类绝对定位的值`
 
-# 事件 
+# 事件
 
 **三种方式**
 
